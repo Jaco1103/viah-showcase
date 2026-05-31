@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Viah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF6EC; --cream2:#F4ECDC; --card:#FFFDF8; --paper:#FFFFFF;
+    --ink:#16273A; --ink2:#415568; --mut:#6E7E8C; --faint:#A99F8C;
+    --coral:#EF6147; --coral-d:#D2452B; --coral-t:#FBE2DA;
+    --teal:#1A8A8E; --teal-d:#136A6E; --teal-t:#DCEFEF;
+    --sun:#E0A53A; --sun-t:#F7EAD0;
+    --navy:#11293C; --navy2:#173447;
+    --line:#E9E0CE; --line2:#F0E9DA;
+    --sans:"Plus Jakarta Sans",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --sh:0 20px 50px -24px rgba(22,39,58,.34); --sh-s:0 8px 24px -14px rgba(22,39,58,.26);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .mono{font-family:var(--mono)}
+
+  .deck{height:100vh;position:relative;overflow:hidden}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:72px max(6vw,32px) 104px;opacity:0}
+  .slide.active{display:flex;animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  .inner{max-width:1080px;width:100%;margin:0 auto;position:relative;z-index:2}
+
+  .eyebrow{font-weight:700;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);display:inline-flex;align-items:center;gap:9px;margin-bottom:20px}
+  .eyebrow .dotmark{width:9px;height:9px;border-radius:50% 50% 50% 0;transform:rotate(45deg);background:var(--coral)}
+  h1{font-size:clamp(42px,6.6vw,82px);line-height:1.0;letter-spacing:-.03em;font-weight:800;margin:0}
+  h2{font-size:clamp(32px,4.6vw,56px);line-height:1.05;letter-spacing:-.025em;font-weight:800;margin:0}
+  .lede{font-size:clamp(17px,2vw,22px);line-height:1.5;color:var(--ink2);max-width:660px;margin:22px 0 0;font-weight:500}
+  .ac{color:var(--coral)} .at{color:var(--teal)}
+
+  .row{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px}
+  .btn{font-size:16px;font-weight:700;border:none;cursor:pointer;border-radius:100px;padding:15px 28px;display:inline-flex;align-items:center;gap:10px;text-decoration:none;transition:.2s;font-family:var(--sans)}
+  .btn-p{background:var(--coral);color:#fff;box-shadow:0 12px 26px -12px rgba(239,97,71,.85)}
+  .btn-p:hover{background:var(--coral-d);transform:translateY(-2px)}
+  .btn .ar{transition:transform .2s} .btn:hover .ar{transform:translateX(4px)}
+
+  .top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:22px max(6vw,32px)}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+  .logo .cmp{width:22px;height:22px;border-radius:50%;border:2.5px solid var(--coral);position:relative;display:inline-block}
+  .logo .cmp:after{content:"";position:absolute;inset:0;margin:auto;width:2px;height:11px;background:var(--coral);transform:rotate(40deg);transform-origin:center}
+  .dots{display:flex;gap:9px}
+  .dots button{width:9px;height:9px;border-radius:50%;border:none;background:var(--line);cursor:pointer;padding:0;transition:.25s}
+  .dots button.on{background:var(--coral);width:26px;border-radius:6px}
+  .nav{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:20px max(6vw,32px)}
+  .nav .count{font-family:var(--mono);font-size:13px;color:var(--mut);letter-spacing:.1em}
+  .navbtns{display:flex;gap:10px}
+  .ico{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-size:18px;color:var(--ink);display:grid;place-items:center;transition:.2s}
+  .ico:hover{border-color:var(--coral);color:var(--coral)}
+  .ico:disabled{opacity:.35;cursor:default;border-color:var(--line);color:var(--ink)}
+
+  .slide.cream2{background:var(--cream2)} .slide.paper{background:var(--paper)}
+  .slide.dark{background:var(--navy);color:#EAF1F4}
+  .slide.dark h2{color:#fff}.slide.dark .lede{color:#A9C2C6}
+  .slide.dark .eyebrow{color:#F0916F}.slide.dark .eyebrow .dotmark{background:#F0916F}
+
+  /* route + pins motif */
+  .route{position:absolute;left:0;right:0;z-index:1;pointer-events:none;width:100%}
+  .route path{fill:none;stroke:var(--coral);stroke-width:2.4;stroke-dasharray:1 11;stroke-linecap:round;opacity:.55}
+  .route .pin{fill:#fff;stroke:var(--coral);stroke-width:3}
+  .route .pinc{fill:var(--coral)}
+  .slide.dark .route path{stroke:#F0916F;opacity:.5}
+  .slide.dark .route .pin{stroke:#F0916F}.slide.dark .route .pinc{fill:#F0916F}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center}
+  @media(max-width:880px){.split{grid-template-columns:1fr;gap:30px}}
+
+  /* problem list */
+  .plist{display:flex;flex-direction:column;gap:13px}
+  .pitem{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--sh-s)}
+  .pitem .x{flex:0 0 30px;height:30px;border-radius:9px;background:var(--coral-t);color:var(--coral-d);display:grid;place-items:center;font-weight:800;font-size:15px;margin-top:1px}
+  .pitem b{font-weight:700}.pitem span{color:var(--mut);font-size:14.5px;display:block;margin-top:2px}
+
+  /* big idea contrast */
+  .vs{display:flex;gap:18px;margin-top:36px;flex-wrap:wrap}
+  .vscard{flex:1;min-width:240px;border-radius:18px;padding:24px;border:1px solid var(--line);background:var(--card);box-shadow:var(--sh-s)}
+  .vscard .t{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+  .vscard h3{margin:0 0 6px;font-size:21px;font-weight:700;letter-spacing:-.01em}
+  .vscard p{margin:0;color:var(--mut);font-size:14.5px;line-height:1.5;font-weight:500}
+  .vscard.bad .t{color:var(--mut)} .vscard.good{border-color:#E7C9BE;background:#FFF6F2}
+  .vscard.good .t{color:var(--coral)}
+
+  /* pipeline */
+  .pipe{display:flex;gap:14px;margin-top:36px;align-items:stretch}
+  .stg{flex:1;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--sh-s)}
+  .stg .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+  .stg h3{margin:8px 0 6px;font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .stg p{margin:0;font-size:14px;color:var(--mut);line-height:1.5;font-weight:500}
+  .stg .when{margin-top:12px;font-size:11.5px;font-weight:700;display:inline-block;padding:4px 10px;border-radius:20px}
+  .when.once{background:var(--sun-t);color:var(--sun)} .when.every{background:var(--teal-t);color:var(--teal-d)}
+  .pipe .arr{align-self:center;color:var(--faint);font-size:20px}
+  @media(max-width:880px){.pipe{flex-direction:column}.pipe .arr{transform:rotate(90deg)}}
+  .pcap{margin-top:24px;font-size:16px;color:var(--ink2);font-weight:500;max-width:780px}.pcap b{color:var(--coral)}
+
+  /* tech stack layers */
+  .layers{display:flex;flex-direction:column;gap:14px;margin-top:34px}
+  .layer{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 22px;box-shadow:var(--sh-s)}
+  .layer .lh{display:flex;flex-direction:column;gap:3px}
+  .layer .lh .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+  .layer .lh .nm{font-weight:800;font-size:18px;letter-spacing:-.01em}
+  .layer .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:20px;background:var(--cream2);color:var(--ink2);border:1px solid var(--line)}
+  .chip.c{background:var(--coral-t);color:var(--coral-d);border-color:#ECCBC0}
+  .chip.t{background:var(--teal-t);color:var(--teal-d);border-color:#C7E3E3}
+  .layer .use{font-size:13px;color:var(--mut);margin-top:7px;font-weight:500}
+  @media(max-width:760px){.layer{grid-template-columns:1fr;gap:10px}}
+  .tcap{margin-top:22px;font-size:15px;color:var(--ink2);font-weight:500;max-width:820px}
+  .tcap b{color:var(--teal-d)}
+
+  /* why cards */
+  .cards4{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px}
+  @media(max-width:760px){.cards4{grid-template-columns:1fr}}
+  .c4{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:var(--sh-s)}
+  .c4 h3{margin:0 0 5px;font-size:18px;font-weight:700}.c4 p{margin:0;color:var(--mut);font-size:14.5px;line-height:1.5;font-weight:500}
+  .c4 .ic{font-size:20px;margin-bottom:10px;width:42px;height:42px;border-radius:12px;display:grid;place-items:center}
+  .ic.c{background:var(--coral-t);color:var(--coral-d)} .ic.t{background:var(--teal-t);color:var(--teal-d)}
+  .ic.s{background:var(--sun-t);color:var(--sun)} .ic.n{background:#E2EAEC;color:var(--navy)}
+
+  .stat{display:flex;gap:34px;flex-wrap:wrap;margin-top:30px}
+  .stat .s b{display:block;font-size:36px;font-weight:800;letter-spacing:-.02em;color:#fff}
+  .stat .s span{font-size:13.5px;color:#A9C2C6;font-weight:600}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+  <div class="top">
+    <div class="logo"><span class="cmp"></span> Viah</div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- 1 HERO -->
+  <section class="slide active">
+    <svg class="route" style="top:14%" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <path d="M60,180 C 260,60 420,210 640,110 S 1000,60 1150,150"/>
+      <circle class="pin" cx="60" cy="180" r="7"/><circle class="pinc" cx="60" cy="180" r="2.5"/>
+      <circle class="pin" cx="420" cy="158" r="7"/><circle class="pinc" cx="420" cy="158" r="2.5"/>
+      <circle class="pin" cx="760" cy="96" r="7"/><circle class="pinc" cx="760" cy="96" r="2.5"/>
+      <circle class="pin" cx="1150" cy="150" r="8"/><circle class="pinc" cx="1150" cy="150" r="3"/>
+    </svg>
+    <div class="inner">
+      <div class="eyebrow"><span class="dotmark"></span> A smarter way to plan a trip</div>
+      <h1>Real places,<br>sequenced into<br>your <span class="ac">perfect day</span>.</h1>
+      <p class="lede">Pick a city, drop an anchor, choose your moods. Viah builds a walkable, day-by-day itinerary of real, quality-checked places — in a second, with no hallucinated venues.</p>
+      <div class="row"><button class="btn btn-p" onclick="go(1)">See how it works <span class="ar mono">→</span></button></div>
+    </div>
+  </section>
+
+  <!-- 2 PROBLEM -->
+  <section class="slide cream2">
+    <div class="inner split">
+      <div>
+        <div class="eyebrow"><span class="dotmark"></span> The problem</div>
+        <h2>Trip planning is<br>40 tabs — or an AI<br>that makes things up.</h2>
+        <p class="lede">Maps and blogs give you no plan. A chatbot is faster but unreliable — it predicts plausible text, with no live source of truth.</p>
+      </div>
+      <div class="plist">
+        <div class="pitem"><span class="x">✕</span><div><b>Hallucination.</b><span>Invents venues, wrong hours, places that closed years ago.</span></div></div>
+        <div class="pitem"><span class="x">✕</span><div><b>Popularity bias.</b><span>Suggests Nyhavn and Tivoli to everyone, whatever you actually like.</span></div></div>
+        <div class="pitem"><span class="x">✕</span><div><b>No structure.</b><span>"Walking distance," "open at 9pm," "under €€" become soft hints, not rules.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 BIG IDEA -->
+  <section class="slide paper">
+    <div class="inner">
+      <div class="eyebrow"><span class="dotmark"></span> The idea</div>
+      <h2>AI runs <span class="at">once</span> to understand<br>every place — never to plan your trip.</h2>
+      <div class="vs">
+        <div class="vscard bad">
+          <div class="t">Typical AI travel app</div>
+          <h3>AI on every request</h3>
+          <p>Calls a model each time you ask — slow, costly, and free to hallucinate a venue that doesn't exist.</p>
+        </div>
+        <div class="vscard good">
+          <div class="t">Viah</div>
+          <h3>AI once, then an algorithm</h3>
+          <p>Every place is checked and understood ahead of time. When you search, a database does the matching — fast, real, repeatable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 PIPELINE -->
+  <section class="slide cream2">
+    <div class="inner">
+      <div class="eyebrow"><span class="dotmark"></span> How places get ready</div>
+      <h2>Three stages. AI in only one.</h2>
+      <div class="pipe">
+        <div class="stg"><div class="k">Stage 1</div><h3>Ingest</h3><p>Real places pulled from Google Places — name, location, rating, hours, price. Already structured.</p><span class="when once">occasional</span></div>
+        <div class="arr mono">→</div>
+        <div class="stg"><div class="k">Stage 2 · AI</div><h3>Enrich</h3><p>Claude classifies each place's vibe against a fixed list of moods, with a confidence score. Once per place.</p><span class="when once">once per place</span></div>
+        <div class="arr mono">→</div>
+        <div class="stg"><div class="k">Stage 3</div><h3>Match</h3><p>You search. A server-side function filters and ranks real candidates and returns your list. No AI.</p><span class="when every">every search</span></div>
+      </div>
+      <p class="pcap">AI is consulted <b>once per place</b>, never once per search — so every trip you plan is instant and reliable.</p>
+    </div>
+  </section>
+
+  <!-- 5 TECH STACK (depth, no algorithm) -->
+  <section class="slide paper">
+    <div class="inner">
+      <div class="eyebrow"><span class="dotmark"></span> Under the hood</div>
+      <h2>A clean three-layer stack.</h2>
+      <div class="layers">
+        <div class="layer">
+          <div class="lh"><span class="tag">Layer 1 · App</span><span class="nm">iOS</span></div>
+          <div>
+            <div class="chips"><span class="chip">SwiftUI</span><span class="chip t">MapKit</span><span class="chip t">MKLocalSearchCompleter</span><span class="chip">supabase-swift</span></div>
+            <div class="use">Native maps and live anchor-search. The app gathers structured input and renders results — it never computes the ranking or holds secrets.</div>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="lh"><span class="tag">Layer 2 · Data</span><span class="nm">Supabase</span></div>
+          <div>
+            <div class="chips"><span class="chip t">PostgreSQL</span><span class="chip t">PostGIS</span><span class="chip">Row-Level Security</span><span class="chip">Auth</span><span class="chip c">search RPC</span></div>
+            <div class="use">The single source of truth. <b>Geolocation runs here</b> — PostGIS turns 1,432 OpenStreetMap polygons into deterministic place tags (waterfront, beach access). All matching happens in one server-side SQL function, behind RLS.</div>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="lh"><span class="tag">Layer 3 · Pipeline</span><span class="nm">Ingest &amp; Enrich</span></div>
+          <div>
+            <div class="chips"><span class="chip">TypeScript / Node</span><span class="chip">Google Places</span><span class="chip c">Claude Sonnet</span><span class="chip t">OpenStreetMap · Overpass</span></div>
+            <div class="use">Run rarely, from a trusted machine. Pulls real places, tags their vibe once with AI, and derives geo features from OSM — keeping every API key off users' devices.</div>
+          </div>
+        </div>
+      </div>
+      <p class="tcap"><b>The geolocation story:</b> places come from Google with exact coordinates; OpenStreetMap polygons add "is this on the water?" via PostGIS; MapKit renders it all natively — and proximity is computed inside Postgres at query time.</p>
+    </div>
+  </section>
+
+  <!-- 6 WHY IT MATTERS -->
+  <section class="slide cream2">
+    <div class="inner">
+      <div class="eyebrow"><span class="dotmark"></span> Why it matters</div>
+      <h2>Fast, real, consistent —<br>and far lighter on energy.</h2>
+      <div class="cards4">
+        <div class="c4"><div class="ic c">⚡</div><h3>Sub-second</h3><p>A database lookup, not an AI call. The plan appears the moment you ask.</p></div>
+        <div class="c4"><div class="ic t">✓</div><h3>Real &amp; reliable</h3><p>Every place exists, sourced from Google and quality-gated. No invented venues.</p></div>
+        <div class="c4"><div class="ic n">↺</div><h3>Consistent</h3><p>Same input, same result — and you can see which moods matched each stop.</p></div>
+        <div class="c4"><div class="ic s">🌱</div><h3>Lighter footprint</h3><p>AI runs once per place, not once per search — a fraction of the energy at scale.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 CLOSE -->
+  <section class="slide dark">
+    <svg class="route" style="bottom:12%" viewBox="0 0 1200 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <path d="M50,120 C 240,200 430,60 650,140 S 1000,200 1160,90"/>
+      <circle class="pin" cx="50" cy="120" r="7"/><circle class="pinc" cx="50" cy="120" r="2.5"/>
+      <circle class="pin" cx="430" cy="92" r="7"/><circle class="pinc" cx="430" cy="92" r="2.5"/>
+      <circle class="pin" cx="820" cy="150" r="7"/><circle class="pinc" cx="820" cy="150" r="2.5"/>
+      <circle class="pin" cx="1160" cy="90" r="8"/><circle class="pinc" cx="1160" cy="90" r="3"/>
+    </svg>
+    <div class="inner">
+      <div class="eyebrow"><span class="dotmark"></span> Where it stands</div>
+      <h2>A real plan in a second —<br>not forty browser tabs.</h2>
+      <p class="lede">A structured, reliable alternative to generic listings and unreliable chatbots — built to scale to any city.</p>
+      <div class="stat">
+        <div class="s"><b>680</b><span>places live in Copenhagen</span></div>
+        <div class="s"><b>7</b><span>categories, city-agnostic engine</span></div>
+        <div class="s"><b>iOS</b><span>beta in build</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="nav">
+    <span class="count" id="count">01 / 07</span>
+    <div class="navbtns">
+      <button class="ico" id="prev" onclick="go(cur-1)">←</button>
+      <button class="ico" id="next" onclick="go(cur+1)">→</button>
+    </div>
+  </div>
+</div>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const N=slides.length, dots=document.getElementById('dots');
+  slides.forEach((_,i)=>{const b=document.createElement('button');b.onclick=()=>go(i);dots.appendChild(b);});
+  let cur=0;
+  function go(n){
+    if(n<0||n>=N)return;
+    slides[cur].classList.remove('active');
+    cur=n; const s=slides[cur];
+    s.classList.remove('active'); void s.offsetWidth; s.classList.add('active');
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===cur));
+    document.getElementById('count').textContent=String(cur+1).padStart(2,'0')+" / "+String(N).padStart(2,'0');
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===N-1;
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(cur+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+  });
+  go(0);
+</script>
+</body>
+</html>
