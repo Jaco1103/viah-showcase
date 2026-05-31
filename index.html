@@ -184,6 +184,31 @@
   @media(max-width:900px){.pipe{flex-direction:column}.pipe .arr{transform:rotate(90deg)}}
   .pcap{margin-top:22px;font-size:16px;color:var(--ink-soft);max-width:760px}.pcap b{color:var(--orange);font-weight:600}
 
+  /* matching slide (softened — no weights) */
+  .qpills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .qpill{font-size:13px;font-weight:700;padding:7px 14px;border-radius:100px;background:var(--blue-soft);color:var(--blue-deep)}
+  .qpill.o{background:var(--orange-soft);color:var(--orange)}
+  .bars{margin-top:18px;background:var(--cloud);border-radius:18px;padding:18px 20px;box-shadow:var(--sh-card)}
+  .bars .bt{font-weight:700;font-size:14.5px;margin-bottom:14px}.bars .bt b{color:var(--blue-deep)}
+  .fbar{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+  .fbar .fl{width:92px;font-size:12.5px;color:var(--ink-soft);font-weight:600}
+  .fbar .track{flex:1;height:12px;border-radius:8px;background:#EAEFF7;overflow:hidden}
+  .fbar .fill{height:100%;border-radius:8px;width:0;transition:width .9s cubic-bezier(.2,.7,.2,1) .35s}
+  .slide.active .fbar .fill.tag{width:90%;background:var(--grad)}
+  .slide.active .fbar .fill.prox{width:54%;background:var(--blue)}
+  .slide.active .fbar .fill.rate{width:22%;background:var(--orange)}
+  .bars .note{margin-top:8px;font-size:12.5px;color:var(--ink-mute)}
+  .insight{margin-top:14px;border-left:3px solid var(--orange);background:#FFF3EC;border-radius:0 14px 14px 0;padding:13px 16px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+  .insight b{color:var(--orange)}
+  .rlist{background:var(--cloud);border-radius:18px;box-shadow:var(--sh);overflow:hidden}
+  .rlist .rh{padding:11px 16px;border-bottom:1px solid var(--line);font-size:10.5px;letter-spacing:.12em;color:var(--ink-mute);font-weight:700}
+  .rrow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .rrow:last-child{border-bottom:none}
+  .rrow.win{background:var(--blue-soft)}
+  .rrow .rk{font-weight:800;font-size:13px;color:var(--ink-mute);width:14px}.rrow.win .rk{color:var(--blue-deep)}
+  .rrow .nm{flex:1;font-weight:700;font-size:14.5px;color:var(--ink)}
+  .rrow .nm small{display:block;font-weight:500;font-size:11.5px;color:var(--ink-mute);margin-top:2px}
+
   .layers{display:flex;flex-direction:column;gap:13px;margin-top:30px}
   .layer{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;background:var(--cloud);border-radius:18px;padding:18px 22px;box-shadow:var(--sh-card)}
   .layer .lh{display:flex;flex-direction:column;gap:5px}
@@ -358,6 +383,36 @@
         <div class="stg"><div class="k">Stage 3</div><h3>Match</h3><p>You search. A server-side function filters and ranks real candidates. No AI.</p><span class="when every">every search</span></div>
       </div>
       <p class="pcap">AI is consulted <b>once per place</b>, never once per search — so every trip is instant, reliable, and far lighter on energy.</p>
+    </div>
+  </section>
+
+  <!-- MATCHING (softened — no weights) -->
+  <section class="slide sky">
+    <div class="inner">
+      <div class="eyebrow"><span class="d"></span> The matching, in action</div>
+      <h2>Your taste outweighs<br>the <span class="gw">obvious</span>.</h2>
+      <div class="split" style="margin-top:28px;align-items:start">
+        <div>
+          <p class="lede" style="margin-top:0">Near Nyhavn, you asked for:</p>
+          <div class="qpills"><span class="qpill">specialty coffee</span><span class="qpill">brunch</span><span class="qpill o">within 1.5 km</span></div>
+          <div class="bars">
+            <div class="bt">Why <b>Kismet</b> ranks #1</div>
+            <div class="fbar"><span class="fl">Mood match</span><div class="track"><div class="fill tag"></div></div></div>
+            <div class="fbar"><span class="fl">Proximity</span><div class="track"><div class="fill prox"></div></div></div>
+            <div class="fbar"><span class="fl">Rating</span><div class="track"><div class="fill rate"></div></div></div>
+            <div class="note">Mood match counts most — by design.</div>
+          </div>
+          <div class="insight"><b>Elis</b> is 150 m closer and rated higher (4.8★) — but matches only <b>one</b> of your two moods. Kismet matches both, so it wins. Your preferences beat distance.</div>
+        </div>
+        <div class="rlist">
+          <div class="rh">RANKED FOR YOU</div>
+          <div class="rrow win"><span class="rk">1</span><span class="nm">Kismet<small>specialty coffee · brunch · 0.58 km · 4.4★</small></span></div>
+          <div class="rrow"><span class="rk">2</span><span class="nm">Sonny<small>specialty coffee · brunch · 1.02 km · 4.3★</small></span></div>
+          <div class="rrow"><span class="rk">3</span><span class="nm">Elis Copenhagen<small>specialty coffee · 0.15 km · 4.8★</small></span></div>
+          <div class="rrow"><span class="rk">4</span><span class="nm">Coffee Collective<small>specialty coffee · 0.46 km · 4.6★</small></span></div>
+          <div class="rrow"><span class="rk">5</span><span class="nm">Nude Coffee<small>specialty coffee · 0.54 km · 5.0★</small></span></div>
+        </div>
+      </div>
     </div>
   </section>
 
