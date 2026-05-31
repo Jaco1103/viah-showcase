@@ -46,6 +46,8 @@
   .btn-p:hover{transform:translateY(-2px)}
   .btn-p .circ{width:26px;height:26px;border-radius:50%;background:var(--orange);display:grid;place-items:center;color:#fff;transition:transform .2s}
   .btn-p:hover .circ{transform:translateX(3px)}
+  .btn-o{background:transparent;color:var(--ink);border:1.5px solid var(--ink-faint)}
+  .btn-o:hover{border-color:var(--ink);transform:translateY(-2px)}
 
   .top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:22px max(5.5vw,30px)}
   .logo{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:800;font-size:21px;letter-spacing:-.02em}
@@ -225,7 +227,7 @@
       <div class="eyebrow"><span class="d"></span> A personal travel companion</div>
       <h1>Every trip is <span class="ab">unique</span>.<br>Every day, <span class="gw">sequenced</span>.</h1>
       <p class="lede">Pick a city, drop an anchor, choose your moods — Viah builds a walkable, day-by-day itinerary of real, quality-checked places. In a second, with no hallucinated venues.</p>
-      <div class="row"><button class="btn btn-p" onclick="go(1)">See how it works <span class="circ">→</span></button></div>
+      <div class="row"><button class="btn btn-p" onclick="go(1)">See how it works <span class="circ">→</span></button><a class="btn btn-o" href="https://github.com/Jaco1103/viah-showcase" target="_blank" rel="noopener">View on GitHub</a></div>
     </div>
   </section>
 
